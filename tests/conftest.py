@@ -31,18 +31,18 @@ def skip_notifications_fixture():
 
 # This fixture, when used, will result in calls to async_get_data to return None. To have the call
 # return a value, we would add the `return_value=<VALUE_TO_RETURN>` parameter to the patch call.
-@pytest.fixture(name="bypass_get_data")
-def bypass_get_data_fixture():
-    """Skip calls to get data from API."""
-
-    async def mock_async_get_data(self):
-        return {"body": "test"}
-
-    with patch(
-        "custom_components.anova_nano.AnovaNanoApiClient.async_get_data",
-        mock_async_get_data,
-    ):
-        yield
+# @pytest.fixture(name="bypass_get_data")
+# def bypass_get_data_fixture():
+#     """Skip calls to get data from API."""
+#
+#     async def mock_async_get_data(self):
+#         return {"body": "test"}
+#
+#     with patch(
+#         "custom_components.anova_nano.AnovaNanoApiClient.async_get_data",
+#         mock_async_get_data,
+#     ):
+#         yield
 
 
 # In this fixture, we are forcing calls to async_get_data to raise an Exception. This is useful
@@ -50,8 +50,8 @@ def bypass_get_data_fixture():
 @pytest.fixture(name="error_on_get_data")
 def error_get_data_fixture():
     """Simulate error when retrieving data from API."""
-    with patch(
-        "custom_components.anova_nano.AnovaNanoApiClient.async_get_data",
-        side_effect=AnovaNanoApiClientError,
-    ):
-        yield
+    # with patch(
+    #     "custom_components.anova_nano.AnovaNanoApiClient.async_get_data",
+    #     side_effect=AnovaNanoApiClientError,
+    # ):
+    yield

@@ -18,32 +18,78 @@ from .api import (
 )
 from .const import DOMAIN, LOGGER
 
+import logging
+from typing import TYPE_CHECKING
 
-# https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching data from the API."""
+from homeassistant.components import bluetooth
+from homeassistant.components.bluetooth.active_update_coordinator import (
+    ActiveBluetoothDataUpdateCoordinator,
+)
+from homeassistant.core import CoreState, HomeAssistant, callback
+from pyanova_nano import PyAnova
 
-    config_entry: ConfigEntry
+if TYPE_CHECKING:
+    from bleak.backends.device import BLEDevice
+
+
+# TODO: Update
+class AnovaNanoDataUpdateCoordinator(
+    ActiveBluetoothDataUpdateCoordinator[None]
+):
+    """Class to manage fetching example data."""
 
     def __init__(
         self,
         hass: HomeAssistant,
-        client: AnovaNanoApiClient,
+        logger: logging.Logger,
+        ble_device: BLEDevice,
     ) -> None:
-        """Initialize."""
-        self.client = client
+        """Initialize example data coordinator."""
         super().__init__(
             hass=hass,
-            logger=LOGGER,
-            name=DOMAIN,
-            update_interval=timedelta(minutes=5),
+            logger=logger,
+            address=ble_device.address,
+            needs_poll_method=self._needs_poll,
+            poll_method=self._async_update,
+            mode=bluetooth.BluetoothScanningMode.ACTIVE,
+            connectable=True,
+        )
+        self.client: PyAnova = PyAnova()
+
+    @callback
+    def _needs_poll(
+        self,
+        service_info: bluetooth.BluetoothServiceInfoBleak,
+        seconds_since_last_poll: float | None,
+    ) -> bool:
+        # Only poll if hass is running, we need to poll,
+        # and we actually have a way to connect to the device
+        return (
+            self.hass.state == CoreState.running
+            and self.client.poll_needed(seconds_since_last_poll)
+            and bool(
+                bluetooth.async_ble_device_from_address(
+                    self.hass, service_info.device.address, connectable=True
+                )
+            )
         )
 
-    async def _async_update_data(self):
-        """Update data via library."""
-        try:
-            return await self.client.async_get_data()
-        except AnovaNanoApiClientAuthenticationError as exception:
-            raise ConfigEntryAuthFailed(exception) from exception
-        except AnovaNanoApiClientError as exception:
-            raise UpdateFailed(exception) from exception
+    async def _async_update(
+        self, service_info: bluetooth.BluetoothServiceInfoBleak
+    ) -> None:
+        """Poll the device."""
+
+
+    @callback
+    def _async_handle_unavailable(
+        self, service_info: bluetooth.BluetoothServiceInfoBleak
+    ) -> None:
+        """Handle the device going unavailable."""
+
+    @callback
+    def _async_handle_bluetooth_event(
+        self,
+        service_info: bluetooth.BluetoothServiceInfoBleak,
+        change: bluetooth.BluetoothChange,
+    ) -> None:
+        """Handle a Bluetooth event."""
