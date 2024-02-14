@@ -19,6 +19,7 @@ from .entity import AnovaNanoDescriptionEntity
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
         key="water_temperature",
+        name="water temperature",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -26,24 +27,28 @@ ENTITY_DESCRIPTIONS = (
     ),
     SensorEntityDescription(
         key="heater_temperature",
+        name="heater temperature",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     SensorEntityDescription(
         key="triac_temperature",
+        name="triac temperature",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     SensorEntityDescription(
         key="internal_temperature",
+        name="internal temperature",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     SensorEntityDescription(
         key="motor_speed",
+        name="motor speed",
         state_class=SensorStateClass.MEASUREMENT,
     ),
 )
@@ -77,7 +82,10 @@ class AnovaNanoSensor(AnovaNanoDescriptionEntity, SensorEntity):
         self.coordinator: AnovaNanoDataUpdateCoordinator = coordinator
 
     @property
-    def native_value(self) -> str:
+    def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-
-        return getattr(self.coordinator.status, self.entity_description.key)
+        try:
+            return getattr(self.coordinator.status, self.entity_description.key)
+        except AttributeError:
+            # Status is not set yet.
+            return None

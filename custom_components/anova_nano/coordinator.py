@@ -77,7 +77,8 @@ class AnovaNanoDataUpdateCoordinator(ActiveBluetoothDataUpdateCoordinator[None])
         """Poll the device."""
         try:
             self.status: SensorValues = await self.client.get_sensor_values()
-        except Exception:
+        except Exception as e:
+            self.logger.exception(e)
             # TODO: Narrow down exception type
             self.last_update_success = False
         else:

@@ -17,10 +17,12 @@ from .entity import AnovaNanoDescriptionEntity
 ENTITY_DESCRIPTIONS = (
     BinarySensorEntityDescription(
         key="water_low",
+        name="water low",
         device_class=BinarySensorDeviceClass.PROBLEM,
     ),
     BinarySensorEntityDescription(
         key="water_leak",
+        name="water leak",
         device_class=BinarySensorDeviceClass.PROBLEM,
     ),
 )
@@ -53,6 +55,11 @@ class AnovaNanoBinarySensor(AnovaNanoDescriptionEntity, BinarySensorEntity):
         self.entity_description = entity_description
 
     @property
-    def is_on(self) -> bool:
+    def is_on(self) -> bool | None:
         """Return true if the binary_sensor is on."""
-        return getattr(self.coordinator.status, self.entity_description.key)
+        try:
+            return getattr(self.coordinator.status, self.entity_description.key)
+        except AttributeError:
+            # Status is not set yet.
+            return None
+
