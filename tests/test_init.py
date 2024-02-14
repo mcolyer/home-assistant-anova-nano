@@ -1,11 +1,8 @@
 """Test Anova Nano setup process."""
-from custom_components.anova_nano import (
-    AnovaNanoDataUpdateCoordinator,
-)
-from custom_components.anova_nano.const import (
-    DOMAIN,
-)
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.anova_nano import AnovaNanoDataUpdateCoordinator
+from custom_components.anova_nano.const import DOMAIN
 
 from .const import MOCK_CONFIG
 

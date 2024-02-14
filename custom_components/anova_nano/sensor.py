@@ -2,12 +2,15 @@
 from __future__ import annotations
 
 from homeassistant.components.sensor import (
+    SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
-    SensorDeviceClass,
     SensorStateClass,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .coordinator import AnovaNanoDataUpdateCoordinator
@@ -19,6 +22,7 @@ ENTITY_DESCRIPTIONS = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
     ),
     SensorEntityDescription(
         key="heater_temperature",
@@ -45,7 +49,9 @@ ENTITY_DESCRIPTIONS = (
 )
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
+):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_devices(
@@ -68,8 +74,10 @@ class AnovaNanoSensor(AnovaNanoDescriptionEntity, SensorEntity):
         """Initialize the sensor class."""
         super().__init__(coordinator, entity_description)
         self.entity_description = entity_description
+        self.coordinator: AnovaNanoDataUpdateCoordinator = coordinator
 
     @property
     def native_value(self) -> str:
         """Return the native value of the sensor."""
-        return 10.0
+
+        return getattr(self.coordinator.status, self.entity_description.key)

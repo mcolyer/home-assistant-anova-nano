@@ -1,8 +1,7 @@
 """Constants for Anova Nano tests."""
-from bleak import BLEDevice, AdvertisementData
+from bleak import AdvertisementData, BLEDevice
 from habluetooth import BluetoothServiceInfoBleak
 from homeassistant.const import CONF_ADDRESS
-
 
 _SERVICE_UUID = "0e140000-0af1-4582-a242-773e63054c68"
 _NAME = None

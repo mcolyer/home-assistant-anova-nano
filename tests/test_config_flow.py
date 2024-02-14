@@ -2,15 +2,12 @@
 from unittest.mock import patch
 
 import pytest
-from custom_components.anova_nano.const import (
-    DOMAIN,
-)
+from homeassistant import config_entries, data_entry_flow
 from homeassistant.config_entries import SOURCE_BLUETOOTH
-from homeassistant import data_entry_flow
+from homeassistant.const import CONF_ADDRESS
 from homeassistant.data_entry_flow import FlowResultType
 
-from homeassistant import config_entries
-from homeassistant.const import CONF_ADDRESS
+from custom_components.anova_nano.const import DOMAIN
 
 from .const import MOCK_CONFIG, MOCK_SERVICE_INFO, generate_mock_service_info
 
@@ -58,6 +55,7 @@ async def test_successful_config_flow(hass, bypass_setup):
 
     assert len(bypass_setup.mock_calls) == 1
 
+
 async def test_config_flow_multiple_devices(hass, bypass_setup):
     """Test a failed config flow due to credential validation failure."""
     other_address = "VV:WW:XX:YY:ZZ"
@@ -92,6 +90,7 @@ async def test_config_flow_multiple_devices(hass, bypass_setup):
 
 
 # Fault cases.
+
 
 async def test_config_flow_no_devices(hass):
     """Test an aborted config flow due to not having discovered any devices."""
@@ -131,7 +130,7 @@ async def test_failed_config_flow(hass, error_on_get_data):
     # And the setup of the entry fails.
     with patch(
         "custom_components.anova_nano.bluetooth.async_ble_device_from_address",
-        return_value = MOCK_SERVICE_INFO.device
+        return_value=MOCK_SERVICE_INFO.device,
     ):
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"], user_input={}
@@ -139,4 +138,3 @@ async def test_failed_config_flow(hass, error_on_get_data):
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["errors"] == {"base": "unknown"}
-

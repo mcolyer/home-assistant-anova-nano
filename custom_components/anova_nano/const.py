@@ -3,7 +3,9 @@ from logging import Logger, getLogger
 
 LOGGER: Logger = getLogger(__package__)
 
-NAME = "Integration blueprint"
+NAME = "Anova Nano BLE integration"
 DOMAIN = "anova_nano"
 VERSION = "0.0.0"
-ATTRIBUTION = "Data provided by http://jsonplaceholder.typicode.com/"
+ATTRIBUTION = ""
+
+SERVICE_UUID = "0e140000-0af1-4582-a242-773e63054c68"

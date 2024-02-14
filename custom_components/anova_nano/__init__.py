@@ -7,11 +7,11 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform, CONF_ADDRESS
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.components import bluetooth
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_ADDRESS, Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN
 from .coordinator import AnovaNanoDataUpdateCoordinator
@@ -23,18 +23,25 @@ PLATFORMS: list[Platform] = [
 
 _LOGGER = logging.getLogger(__name__)
 
+
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
-    connectable=True
+    connectable = True
     address: str = entry.data[CONF_ADDRESS]
 
-    ble_device = bluetooth.async_ble_device_from_address(hass, address=address.upper(), connectable=connectable)
+    ble_device = bluetooth.async_ble_device_from_address(
+        hass, address=address.upper(), connectable=connectable
+    )
+    if not ble_device:
+        raise ConfigEntryNotReady(f"Could not find Anova Nano with address: {address}")
+
     hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
         hass=hass,
         logger=_LOGGER,
-        ble_device=ble_device
+        entry=entry,
+        ble_device=ble_device,
     )
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     # await coordinator.async_config_entry_first_refresh()

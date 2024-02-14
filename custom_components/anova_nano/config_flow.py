@@ -4,24 +4,24 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-from homeassistant import config_entries
-from homeassistant.const import CONF_ADDRESS
-from homeassistant.helpers import selector
 from bleak import AdvertisementData
-
+from homeassistant import config_entries
 from homeassistant.components.bluetooth import (
     BluetoothServiceInfoBleak,
     async_discovered_service_info,
 )
-from homeassistant.data_entry_flow import AbortFlow, FlowResult
+from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import callback
+from homeassistant.data_entry_flow import AbortFlow, FlowResult
+from homeassistant.helpers import selector
 
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN, LOGGER, SERVICE_UUID
 
 
 def format_unique_id(address: str) -> str:
     """Format the unique ID."""
     return address
+
 
 def name_from_discovery(advertisement: AdvertisementData) -> str:
     # TODO: Get a name - somehow?
@@ -48,6 +48,10 @@ class AnovaNanoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     format_unique_id(address) in current_addresses
                     or address in self._discovered_advs
                 ):
+                    continue
+
+                # Skip anything without our service UUID.
+                if SERVICE_UUID not in discovery_info.service_uuids:
                     continue
 
                 # TODO: Filter for model or make.

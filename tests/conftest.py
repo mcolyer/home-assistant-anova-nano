@@ -3,10 +3,6 @@ from unittest.mock import patch
 
 import pytest
 
-from custom_components.anova_nano.api import (
-    AnovaNanoApiClientError,
-)
-
 pytest_plugins = "pytest_homeassistant_custom_component"
 
 
