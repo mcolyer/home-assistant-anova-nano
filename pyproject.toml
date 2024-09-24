@@ -1,2 +1,12 @@
+[project]
+name = "hacs-anova-nano"
+version = "0.1.0"
+authors = [
+  { name="Mitja Muller-Jend", email="mitja.muellerjend+github@gmail.com" },
+]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.setuptools]
+packages = ['custom_components']

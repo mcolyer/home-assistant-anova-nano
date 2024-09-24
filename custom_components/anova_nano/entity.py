@@ -1,19 +1,17 @@
 """AnovaNanoEntity class."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
 from homeassistant.helpers.entity import DeviceInfo, EntityDescription
-from homeassistant.components.bluetooth.passive_update_coordinator import (
-    PassiveBluetoothCoordinatorEntity,
-)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from pyanova_nano.types import SensorValues
 
 from .const import ATTRIBUTION, DOMAIN, NAME, VERSION
 from .coordinator import AnovaNanoDataUpdateCoordinator
 
 
-class AnovaNanoEntity(PassiveBluetoothCoordinatorEntity[AnovaNanoDataUpdateCoordinator]):
+class AnovaNanoEntity(CoordinatorEntity[AnovaNanoDataUpdateCoordinator]):
     """AnovaNanoEntity class."""
 
     _attr_attribution = ATTRIBUTION
@@ -30,6 +28,7 @@ class AnovaNanoEntity(PassiveBluetoothCoordinatorEntity[AnovaNanoDataUpdateCoord
             manufacturer=NAME,
         )
         self.coordinator: AnovaNanoDataUpdateCoordinator = coordinator
+        self._last_run_success: bool | None = None
 
     @property
     def status(self) -> SensorValues:
@@ -39,6 +38,18 @@ class AnovaNanoEntity(PassiveBluetoothCoordinatorEntity[AnovaNanoDataUpdateCoord
     def parsed_data(self) -> dict[str, Any]:
         """Return parsed device data for this entity."""
         return self.coordinator.status.__dict__
+
+    @property
+    def extra_state_attributes(self) -> Mapping[Any, Any]:
+        """Return the state attributes."""
+        return {"last_run_success": self._last_run_success}
+
+    async def async_update(self) -> None:
+        """Update the entity.
+
+        Only used by the generic entity update service.
+        """
+        await self.coordinator._async_update_data()
 
 
 class AnovaNanoDescriptionEntity(AnovaNanoEntity):

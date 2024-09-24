@@ -23,9 +23,9 @@ def format_unique_id(address: str) -> str:
     return address
 
 
-def name_from_discovery(advertisement: AdvertisementData) -> str:
+def name_from_discovery(advertisement: BluetoothServiceInfoBleak) -> str:
     # TODO: Get a name - somehow?
-    return "nano"
+    return advertisement.name
 
 
 class AnovaNanoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -55,7 +55,6 @@ class AnovaNanoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     continue
 
                 # TODO: Filter for model or make.
-
                 self._discovered_advs[address] = discovery_info
 
         if not self._discovered_advs:

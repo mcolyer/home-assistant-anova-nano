@@ -62,4 +62,3 @@ class AnovaNanoBinarySensor(AnovaNanoDescriptionEntity, BinarySensorEntity):
         except AttributeError:
             # Status is not set yet.
             return None
-

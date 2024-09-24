@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import logging
 
+from pyanova_nano import PyAnova
+
 from homeassistant.components import bluetooth
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS, Platform
@@ -35,13 +37,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass, address=address.upper(), connectable=connectable
     )
     if not ble_device:
-        raise ConfigEntryNotReady(f"Could not find Anova Nano with address: {address}")
+        raise ConfigEntryNotReady(
+            f"Could not find a Anova Nano with address: {address}"
+        )
 
-    hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
+    client = PyAnova(loop=hass.loop, device=ble_device)
+    await client.connect(device=ble_device)
+
+    coordinator_ = hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
         hass=hass,
         logger=_LOGGER,
         entry=entry,
-        ble_device=ble_device,
+        client=client,
     )
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     # await coordinator.async_config_entry_first_refresh()

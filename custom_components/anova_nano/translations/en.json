@@ -6,11 +6,16 @@
                 "data": {
                     "address": "Device address"
                 }
+            },
+            "confirm": {
+                "title": "Success!",
+                "description": "Configured: {name}"
             }
         },
         "error": {
             "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "unknown": "Unknown error occurred.",
+            "no_devices_found": "Could not discover any Anova Nano devices."
         }
     }
 }
