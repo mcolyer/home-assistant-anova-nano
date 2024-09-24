@@ -32,7 +32,7 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
-        icon="mdi:thermometer",
+        icon="mdi:thermometer-water",
     ),
     AnovaSensorEntityDescription(
         key="heater_temp",
