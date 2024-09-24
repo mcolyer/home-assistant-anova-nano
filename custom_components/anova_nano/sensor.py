@@ -40,6 +40,7 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer",
     ),
     AnovaSensorEntityDescription(
         key="triac_temp",
@@ -47,6 +48,7 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer",
     ),
     AnovaSensorEntityDescription(
         key="internal_temp",
@@ -54,11 +56,13 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer",
     ),
     AnovaSensorEntityDescription(
         key="motor_speed",
         name="motor speed",
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:fan",
     ),
 )
 
