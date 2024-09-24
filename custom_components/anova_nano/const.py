@@ -3,7 +3,7 @@ from logging import Logger, getLogger
 
 LOGGER: Logger = getLogger(__package__)
 
-NAME = "Anova Nano BLE integration"
+NAME = "Anova Nano"
 DOMAIN = "anova_nano"
 VERSION = "0.0.0"
 ATTRIBUTION = ""
