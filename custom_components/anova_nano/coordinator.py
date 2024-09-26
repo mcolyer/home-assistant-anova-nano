@@ -54,6 +54,7 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
             try:
                 self.status: SensorValues = await self.client.get_sensor_values()
             except Exception as err:
+                self.logger.exception(err)
                 raise UpdateFailed(err) from err
 
         return self.status
@@ -73,4 +74,3 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
                 await self.client.stop()
             except Exception as err:  # TODO: Narrow down
                 raise UpdateFailed(err) from err
-

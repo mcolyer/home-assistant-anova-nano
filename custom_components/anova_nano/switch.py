@@ -1,20 +1,11 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import asyncio
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
 from custom_components.anova_nano import AnovaNanoDataUpdateCoordinator
 
-from dataclasses import dataclass
-
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorEntityDescription,
-    SensorStateClass,
-)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback

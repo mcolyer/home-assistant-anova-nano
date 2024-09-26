@@ -28,7 +28,6 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
     AnovaSensorEntityDescription(
         key="water_temp",
         name="water temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
@@ -37,7 +36,6 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
     AnovaSensorEntityDescription(
         key="heater_temp",
         name="heater temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:thermometer",
@@ -45,7 +43,6 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
     AnovaSensorEntityDescription(
         key="triac_temp",
         name="triac temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:thermometer",
@@ -53,7 +50,6 @@ SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
     AnovaSensorEntityDescription(
         key="internal_temp",
         name="internal temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:thermometer",
@@ -109,3 +105,14 @@ class AnovaNanoSensor(AnovaNanoDescriptionEntity, SensorEntity):
         Only used by the generic entity update service.
         """
         await self.coordinator._async_update_data()
+
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        if "temp" in self.entity_description.key and self.coordinator.status:
+            return (
+                UnitOfTemperature.CELSIUS
+                if self.coordinator.status.water_temp_units == "C"
+                else UnitOfTemperature.FAHRENHEIT
+            )
+
+        return self.entity_description.native_unit_of_measurement

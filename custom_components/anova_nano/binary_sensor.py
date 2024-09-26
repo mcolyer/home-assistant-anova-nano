@@ -1,12 +1,15 @@
 """Binary sensor platform for anova_nano."""
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -14,16 +17,23 @@ from .const import DOMAIN
 from .coordinator import AnovaNanoDataUpdateCoordinator
 from .entity import AnovaNanoDescriptionEntity
 
+@dataclass(kw_only=True)
+class AnovaNanoBinaryEntityDescription(BinarySensorEntityDescription):
+    """Describes the binary sensors."""
+
+
 ENTITY_DESCRIPTIONS = (
-    BinarySensorEntityDescription(
+    AnovaNanoBinaryEntityDescription(
         key="water_low",
         name="water low",
         device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
-    BinarySensorEntityDescription(
+    AnovaNanoBinaryEntityDescription(
         key="water_leak",
         name="water leak",
         device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
 )
 
