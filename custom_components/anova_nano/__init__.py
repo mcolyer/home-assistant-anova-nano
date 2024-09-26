@@ -21,6 +21,7 @@ from .coordinator import AnovaNanoDataUpdateCoordinator
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
+    Platform.SWITCH,
 ]
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,7 +43,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
 
     client = PyAnova(loop=hass.loop, device=ble_device)
-    await client.connect(device=ble_device)
+
+    try:
+        await client.connect(device=ble_device)
+    except TimeoutError as err:
+        raise ConfigEntryNotReady(
+            f"Could not connect to the Anova Nano with address: {address}"
+        ) from err
 
     coordinator_ = hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
         hass=hass,

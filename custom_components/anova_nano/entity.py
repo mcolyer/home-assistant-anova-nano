@@ -44,13 +44,6 @@ class AnovaNanoEntity(CoordinatorEntity[AnovaNanoDataUpdateCoordinator]):
         """Return the state attributes."""
         return {"last_run_success": self._last_run_success}
 
-    async def async_update(self) -> None:
-        """Update the entity.
-
-        Only used by the generic entity update service.
-        """
-        await self.coordinator._async_update_data()
-
 
 class AnovaNanoDescriptionEntity(AnovaNanoEntity):
     """Defines an Anova Nano entity that uses a description."""

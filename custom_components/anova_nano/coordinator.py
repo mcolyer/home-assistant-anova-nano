@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for anova_nano."""
 from __future__ import annotations
 
+import asyncio
 import logging
 from asyncio import timeout
 from datetime import timedelta
@@ -56,3 +57,20 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
                 raise UpdateFailed(err) from err
 
         return self.status
+
+    async def turn_on(self):
+        async with timeout(TIMEOUT):
+            try:
+                await self.client.start()
+            except Exception as err:  # TODO: Narrow down
+                raise UpdateFailed(err) from err
+        # Wait for the motor to spin up.
+        await asyncio.sleep(1.0)
+
+    async def turn_off(self):
+        async with timeout(TIMEOUT):
+            try:
+                await self.client.stop()
+            except Exception as err:  # TODO: Narrow down
+                raise UpdateFailed(err) from err
+
