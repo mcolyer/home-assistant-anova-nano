@@ -1,20 +1,26 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import asyncio
+from dataclasses import dataclass
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from custom_components.anova_nano import AnovaNanoDataUpdateCoordinator
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from custom_components.anova_nano import AnovaNanoDataUpdateCoordinator
+
 from .const import DOMAIN
 from .entity import AnovaNanoDescriptionEntity
 
+
+@dataclass(kw_only=True)
+class AnovaNanoSwitchEntityDescription(SwitchEntityDescription):
+    ...
+
+
 SWITCH_ENTITY_DESCRIPTIONS = [
-    SwitchEntityDescription(
+    AnovaNanoSwitchEntityDescription(
         key="cooking",
         name="Cooking",
         icon="mdi:power",

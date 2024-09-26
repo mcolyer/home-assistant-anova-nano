@@ -7,13 +7,12 @@ from __future__ import annotations
 
 import logging
 
-from pyanova_nano import PyAnova
-
 from homeassistant.components import bluetooth
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from pyanova_nano import PyAnova
 
 from .const import DOMAIN
 from .coordinator import AnovaNanoDataUpdateCoordinator

@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from pyanova_nano import PyAnova
 
-from .const import DOMAIN, UPDATE_INTERVAL, TIMEOUT
+from .const import DOMAIN, TIMEOUT, UPDATE_INTERVAL
 
 if TYPE_CHECKING:
     from bleak.backends.device import BLEDevice
