@@ -21,6 +21,7 @@ PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
     Platform.SWITCH,
+    Platform.NUMBER,
 ]
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             f"Could not connect to the Anova Nano with address: {address}"
         ) from err
 
-    coordinator_ = hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
+    _ = hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
         hass=hass,
         logger=_LOGGER,
         entry=entry,

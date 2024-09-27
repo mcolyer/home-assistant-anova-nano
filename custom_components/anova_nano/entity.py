@@ -1,7 +1,8 @@
 """AnovaNanoEntity class."""
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any
+from collections.abc import Mapping
 
 from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -32,6 +33,7 @@ class AnovaNanoEntity(CoordinatorEntity[AnovaNanoDataUpdateCoordinator]):
 
     @property
     def status(self) -> SensorValues:
+        """The current sensor values."""
         return self.coordinator.status
 
     @property

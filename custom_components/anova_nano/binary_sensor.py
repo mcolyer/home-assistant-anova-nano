@@ -73,10 +73,3 @@ class AnovaNanoBinarySensor(AnovaNanoDescriptionEntity, BinarySensorEntity):
         except AttributeError:
             # Status is not set yet.
             return None
-
-    async def async_update(self) -> None:
-        """Update the entity.
-
-        Only used by the generic entity update service.
-        """
-        await self.coordinator._async_update_data()

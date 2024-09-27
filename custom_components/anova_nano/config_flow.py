@@ -4,7 +4,6 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-from bleak import AdvertisementData
 from homeassistant import config_entries
 from homeassistant.components.bluetooth import (
     BluetoothServiceInfoBleak,
@@ -13,9 +12,8 @@ from homeassistant.components.bluetooth import (
 from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import AbortFlow, FlowResult
-from homeassistant.helpers import selector
 
-from .const import DOMAIN, LOGGER, SERVICE_UUID
+from .const import DOMAIN, SERVICE_UUID
 
 
 def format_unique_id(address: str) -> str:
