@@ -7,8 +7,10 @@ from asyncio import timeout
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
+from homeassistant.components import bluetooth
 from habluetooth import BluetoothServiceInfoBleak
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from pyanova_nano import PyAnova
@@ -29,7 +31,6 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         hass: HomeAssistant,
         logger: logging.Logger,
         entry: ConfigEntry,
-        client: PyAnova,
     ) -> None:
         """Initialize example data coordinator."""
         super().__init__(
@@ -39,18 +40,54 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
         self.config_entry: ConfigEntry = entry
-        self.client: PyAnova = client
+        self._hass: HomeAssistant = hass
+        self._address: str = entry.data[CONF_ADDRESS]
+
+        self._client: PyAnova | None = None
+
         self.status: SensorValues | None = None
         self.timer: int | None = None
         self.target_temperature: float | None = None
 
+    async def _connect(self):
+        """Ensure the client is connected."""
+        if self._client and self._client.is_connected():
+            return
+
+        if not self._client:
+            ble_device = bluetooth.async_ble_device_from_address(
+                self._hass, address=self._address.upper(), connectable=True
+            )
+            if not ble_device:
+                raise UpdateFailed(
+                    f"Could not discover a {self.name} with address: {self._address}"
+                )
+
+            self._client = PyAnova(self._hass.loop, device=ble_device)
+
+        try:
+            await self._client.connect()
+        except TimeoutError as err:
+            self._client = None
+            raise UpdateFailed(
+                f"Unable to connect to {self.name} with address: {self._address}"
+            ) from err
+
+    async def disconnect(self):
+        await self._client.disconnect()
+        self._client = None
+
+    @property
+    def client(self) -> PyAnova:
+        """The API client."""
+        return self._client
+
     async def _async_update_data(
         self, service_info: BluetoothServiceInfoBleak = None
     ) -> SensorValues:
-        """Poll the device."""
-        self.logger.debug("_async_update")
+        """Update the device status."""
+        await self._connect()
 
-        assert self.client.is_connected(), "Client is not connected!"
         async with timeout(TIMEOUT):
             try:
                 self.status = await self.client.get_sensor_values()
@@ -62,33 +99,42 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         return self.status
 
     async def turn_on(self):
-        async with timeout(TIMEOUT):
-            try:
-                await self.client.start()
-            except Exception as err:  # TODO: Narrow down
-                raise UpdateFailed(err) from err
+        """Start cooking."""
+        await self._connect()
+
+        try:
+            await self.client.start()
+        except Exception as err:  # TODO: Narrow down
+            raise UpdateFailed(err) from err
+
         # Wait for the motor to spin up.
         await asyncio.sleep(1.0)
 
     async def turn_off(self):
-        async with timeout(TIMEOUT):
-            try:
-                await self.client.stop()
-            except Exception as err:  # TODO: Narrow down
-                raise UpdateFailed(err) from err
+        """Stop cooking."""
+        await self._connect()
+
+        try:
+            await self.client.stop()
+        except Exception as err:  # TODO: Narrow down
+            raise UpdateFailed(err) from err
 
     async def set_timer(self, minutes: int):
+        await self._connect()
+
+        try:
+            await self.client.set_timer(int(minutes))
+        except Exception as err:  # TODO: Narrow down
+            raise UpdateFailed(err) from err
+
         self.timer = minutes
-        async with timeout(TIMEOUT):
-            try:
-                await self.client.set_timer(int(minutes))
-            except Exception as err:  # TODO: Narrow down
-                raise UpdateFailed(err) from err
 
     async def set_target_temperature(self, temp: float):
+        await self._connect()
+
+        try:
+            await self.client.set_target_temperature(temp)
+        except Exception as err:  # TODO: Narrow down
+            raise UpdateFailed(err) from err
+
         self.target_temperature = temp
-        async with timeout(TIMEOUT):
-            try:
-                await self.client.set_target_temperature(temp)
-            except Exception as err:  # TODO: Narrow down
-                raise UpdateFailed(err) from err
