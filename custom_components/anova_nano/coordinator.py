@@ -15,7 +15,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from pyanova_nano import PyAnova
 
-from .const import DOMAIN, TIMEOUT, UPDATE_INTERVAL
+from .const import DOMAIN, TIMEOUT, UPDATE_INTERVAL, NAME
 
 if TYPE_CHECKING:
     from pyanova_nano.types import SensorValues
@@ -54,23 +54,22 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         if self._client and self._client.is_connected():
             return
 
-        if not self._client:
-            ble_device = bluetooth.async_ble_device_from_address(
-                self._hass, address=self._address.upper(), connectable=True
+        ble_device = bluetooth.async_ble_device_from_address(
+            self._hass, address=self._address.upper(), connectable=True
+        )
+        if not ble_device:
+            raise UpdateFailed(
+                f"Could not discover a {NAME} with address: {self._address}"
             )
-            if not ble_device:
-                raise UpdateFailed(
-                    f"Could not discover a {self.name} with address: {self._address}"
-                )
 
-            self._client = PyAnova(self._hass.loop, device=ble_device)
+        self._client = PyAnova(self._hass.loop, device=ble_device)
 
         try:
             await self._client.connect()
         except TimeoutError as err:
             self._client = None
             raise UpdateFailed(
-                f"Unable to connect to {self.name} with address: {self._address}"
+                f"Unable to connect to {NAME} with address: {self._address}"
             ) from err
 
     async def disconnect(self):
