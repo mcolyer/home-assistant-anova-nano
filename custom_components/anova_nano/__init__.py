@@ -12,7 +12,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform, CONF_ADDRESS
 from homeassistant.core import HomeAssistant
 from homeassistant.components import bluetooth
-from .const import DOMAIN, SERVICE_UUID
+from .const import DOMAIN
 from .coordinator import AnovaNanoDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [

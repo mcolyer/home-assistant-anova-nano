@@ -108,7 +108,8 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         """Disconnect from the device (intentionally)."""
         if self._client and self._client.is_connected():
             await self._client.disconnect()
-            bluetooth.async_rediscover_address(self._hass, self._address)
+
+        bluetooth.async_rediscover_address(self._hass, self._address)
 
         # Stop updating.
         self.update_interval = None
