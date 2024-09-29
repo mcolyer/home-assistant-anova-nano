@@ -39,7 +39,7 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
             hass=hass,
             logger=logger,
             name=DOMAIN,
-            update_interval=_UPDATE_INTERVAL,
+            update_interval=None,
         )
         self.config_entry: ConfigEntry = entry
         self._hass: HomeAssistant = hass
