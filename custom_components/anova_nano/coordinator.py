@@ -7,11 +7,12 @@ from asyncio import timeout
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
+from bleak import BLEDevice
 from homeassistant.components import bluetooth
 from habluetooth import BluetoothServiceInfoBleak
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from pyanova_nano import PyAnova
 
@@ -20,7 +21,8 @@ from .const import DOMAIN, TIMEOUT, UPDATE_INTERVAL, NAME
 if TYPE_CHECKING:
     from pyanova_nano.types import SensorValues
 
-DEVICE_STARTUP_TIMEOUT = 60
+DEVICE_CONNECTION_TIMEOUT = 15
+_UPDATE_INTERVAL = timedelta(seconds=UPDATE_INTERVAL)
 
 
 class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
@@ -37,14 +39,16 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
             hass=hass,
             logger=logger,
             name=DOMAIN,
-            update_interval=timedelta(seconds=UPDATE_INTERVAL),
+            update_interval=_UPDATE_INTERVAL,
         )
         self.config_entry: ConfigEntry = entry
         self._hass: HomeAssistant = hass
         self._address: str = entry.data[CONF_ADDRESS]
 
+        self._ble_device: BLEDevice | None = None
         self._client: PyAnova | None = None
 
+        self.last_update_success: bool = False
         self.status: SensorValues | None = None
         self.timer: int | None = None
         self.target_temperature: float | None = None
@@ -54,36 +58,80 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         if self._client and self._client.is_connected():
             return
 
-        ble_device = bluetooth.async_ble_device_from_address(
-            self._hass, address=self._address.upper(), connectable=True
-        )
-        if not ble_device:
-            raise UpdateFailed(
-                f"Could not discover a {NAME} with address: {self._address}"
+        self.logger.info("Connecting to %s", self._address)
+
+        # Try to discover the device if needed.
+        if not self._ble_device:
+            self._ble_device = bluetooth.async_ble_device_from_address(
+                self._hass, address=self._address.upper(), connectable=True
             )
+            if not self._ble_device:
+                # Stop polling until rediscovered.
+                self.update_interval = None
+                raise UpdateFailed(f"{NAME} device has not been discovered yet.")
 
-        self._client = PyAnova(self._hass.loop, device=ble_device)
+        if not self._client:
+            self._client = PyAnova(self._hass.loop, device=self._ble_device)
+            self._client.add_on_disconnect(self.on_disconnect)
 
-        try:
-            await self._client.connect()
-        except TimeoutError as err:
-            self._client = None
-            raise UpdateFailed(
-                f"Unable to connect to {NAME} with address: {self._address}"
-            ) from err
+        # Connect client.
+        if not self._client.is_connected():
+            try:
+                await self._client.connect(
+                    device=self._ble_device,
+                    timeout_seconds=DEVICE_CONNECTION_TIMEOUT,
+                )
+            except TimeoutError as err:
+                self.logger.debug(err, exc_info=True)
+                # Stop polling until async_discovered_device was called.
+                self.update_interval = None
+                bluetooth.async_rediscover_address(self._hass, self._address)
+                raise UpdateFailed(
+                    f"Unable to connect in to {NAME} with address: {self._address}"
+                ) from err
+
+        self.update_interval = timedelta(seconds=UPDATE_INTERVAL)
+
+    def on_disconnect(self):
+        """Set to unavailable and allow rediscovery.
+
+        Triggered if device is disconnected.
+
+        """
+        self.last_update_success = False
+        self.update_interval = None
+
+        self.async_update_listeners()
+        bluetooth.async_rediscover_address(self._hass, self._address)
 
     async def disconnect(self):
-        await self._client.disconnect()
-        self._client = None
+        """Disconnect from the device (intentionally)."""
+        if self._client and self._client.is_connected():
+            await self._client.disconnect()
+            bluetooth.async_rediscover_address(self._hass, self._address)
+
+        # Stop updating.
+        self.update_interval = None
 
     @property
     def client(self) -> PyAnova:
         """The API client."""
         return self._client
 
-    async def _async_update_data(
-        self, service_info: BluetoothServiceInfoBleak = None
-    ) -> SensorValues:
+    @callback
+    def async_discovered_device(
+        self,
+        service_info: BluetoothServiceInfoBleak,
+        change: bluetooth.BluetoothChange,
+    ) -> None:
+        """Subscribe to bluetooth changes."""
+        self.logger.info("Discovered: %s", service_info.name)
+        if service_info.address != self._address:
+            return
+
+        self._hass.async_create_task(self.async_request_refresh())
+
+    async def _async_update_data(self) -> SensorValues:
         """Update the device status."""
         await self._connect()
 
@@ -93,8 +141,11 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
                 self.timer = await self.client.get_timer()
                 self.target_temperature = await self.client.get_target_temperature()
             except Exception as err:
+                self.last_update_success = False
+                self.logger.debug(err, exc_info=True)
                 raise UpdateFailed(err) from err
 
+        self.last_update_success = True
         return self.status
 
     async def turn_on(self):

@@ -32,6 +32,11 @@ class AnovaNanoEntity(CoordinatorEntity[AnovaNanoDataUpdateCoordinator]):
         self._last_run_success: bool | None = None
 
     @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return self.coordinator.last_update_success
+
+    @property
     def status(self) -> SensorValues:
         """The current sensor values."""
         return self.coordinator.status

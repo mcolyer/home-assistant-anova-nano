@@ -7,11 +7,12 @@ from __future__ import annotations
 
 import logging
 
+from homeassistant.components.bluetooth import BluetoothCallbackMatcher
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import Platform, CONF_ADDRESS
 from homeassistant.core import HomeAssistant
-
-from .const import DOMAIN
+from homeassistant.components import bluetooth
+from .const import DOMAIN, SERVICE_UUID
 from .coordinator import AnovaNanoDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
@@ -29,14 +30,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
 
-    hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
+    coordinator_ = hass.data[DOMAIN][entry.entry_id] = AnovaNanoDataUpdateCoordinator(
         hass=hass,
         logger=_LOGGER,
         entry=entry,
     )
 
-    # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-    # await coordinator.async_config_entry_first_refresh()
+    entry.async_on_unload(
+        bluetooth.async_register_callback(
+            hass,
+            coordinator_.async_discovered_device,
+            BluetoothCallbackMatcher(address=entry.data[CONF_ADDRESS]),
+            bluetooth.BluetoothScanningMode.ACTIVE,
+        )
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
