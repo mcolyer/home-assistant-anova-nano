@@ -1,3 +1,4 @@
+"""Number platform for Anova Nano."""
 import asyncio
 from dataclasses import dataclass
 
@@ -18,7 +19,8 @@ from .entity import AnovaNanoDescriptionEntity
 
 @dataclass(kw_only=True)
 class AnovaNanoNumberEntityDescription(NumberEntityDescription):
-    ...
+    """Describes Anova Nano number entity."""
+
     set_fn: str
     state_attr: str
 
@@ -65,19 +67,24 @@ async def async_setup_entry(
 
 
 class AnovaNanoNumberEntity(AnovaNanoDescriptionEntity, NumberEntity):
+    """Representation of an Anova Nano number entity."""
+
     def __init__(
         self,
         coordinator: AnovaNanoDataUpdateCoordinator,
         entity_description: AnovaNanoNumberEntityDescription,
     ):
+        """Initialize the number entity."""
         super().__init__(coordinator, description=entity_description)
         self.entity_description: AnovaNanoNumberEntityDescription = entity_description
 
     @property
     def native_value(self):
+        """Return the current value of the number entity."""
         return getattr(self.coordinator, self.entity_description.state_attr)
 
     async def async_set_native_value(self, value: float):
+        """Set the value of the number entity."""
         func = getattr(self.coordinator, self.entity_description.set_fn)
 
         await func(value)

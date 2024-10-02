@@ -13,6 +13,7 @@ MOCK_CONFIG = {CONF_ADDRESS: _ADDRESS}
 
 
 def generate_mock_service_info(address: str) -> BluetoothServiceInfoBleak:
+    """Generate a mock BluetoothServiceInfoBleak object for testing."""
     return BluetoothServiceInfoBleak(
         name=_NAME,
         manufacturer_data=_MANUFACTURER_DATA,

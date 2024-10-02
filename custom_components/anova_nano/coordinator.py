@@ -171,6 +171,7 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
             raise UpdateFailed(err) from err
 
     async def set_timer(self, minutes: int):
+        """Set the cooking timer."""
         await self._connect()
 
         try:
@@ -181,6 +182,7 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         self.timer = minutes
 
     async def set_target_temperature(self, temp: float):
+        """Set the target temperature."""
         await self._connect()
 
         try:

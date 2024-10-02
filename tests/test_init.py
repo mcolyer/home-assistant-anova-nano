@@ -24,14 +24,14 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data):
     await hass.config_entries.async_setup(config_entry.entry_id)
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (
-        type(hass.data[DOMAIN][config_entry.entry_id]) == AnovaNanoDataUpdateCoordinator
+        isinstance(hass.data[DOMAIN][config_entry.entry_id], AnovaNanoDataUpdateCoordinator)
     )
 
     ## Reload the entry and assert that the data from above is still there
     await hass.config_entries.async_reload(config_entry.entry_id)
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (
-        type(hass.data[DOMAIN][config_entry.entry_id]) == AnovaNanoDataUpdateCoordinator
+        isinstance(hass.data[DOMAIN][config_entry.entry_id], AnovaNanoDataUpdateCoordinator)
     )
 
     ## Unload the entry and verify that the data has been removed
