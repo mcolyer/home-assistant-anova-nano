@@ -2,17 +2,19 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/ludeeus/anova_nano",
+                "description": "If you need help with the configuration have a look here: https://github.com/mcolyer/hacs-anova-nano",
                 "data": {
-                    "username": "Username",
-                    "password": "Password"
+                    "address": "Device address"
                 }
+            },
+            "confirm": {
+                "title": "Success!",
+                "description": "Configured: {name}"
             }
         },
         "error": {
-            "auth": "Username/Password is wrong.",
-            "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "unknown": "Unknown error occurred.",
+            "no_devices_found": "Could not discover any Anova Nano devices."
         }
     }
 }
