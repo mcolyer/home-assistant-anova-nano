@@ -22,6 +22,7 @@ def format_unique_id(address: str) -> str:
 
 
 def name_from_discovery(advertisement: BluetoothServiceInfoBleak) -> str:
+    """Get the name from the discovery advertisement."""
     # TODO: Get a name - somehow?
     return advertisement.name
 

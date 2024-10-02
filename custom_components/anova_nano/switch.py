@@ -1,3 +1,4 @@
+"""Switch platform for Anova Nano."""
 from __future__ import annotations
 
 import asyncio
@@ -16,7 +17,7 @@ from .entity import AnovaNanoDescriptionEntity
 
 @dataclass(kw_only=True)
 class AnovaNanoSwitchEntityDescription(SwitchEntityDescription):
-    ...
+    """Describes Anova Nano switch entity."""
 
 
 SWITCH_ENTITY_DESCRIPTIONS = [

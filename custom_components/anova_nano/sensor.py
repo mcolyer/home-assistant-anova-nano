@@ -108,6 +108,7 @@ class AnovaNanoSensor(AnovaNanoDescriptionEntity, SensorEntity):
 
     @property
     def native_unit_of_measurement(self) -> str | None:
+        """Return the native unit of measurement."""
         if "temp" in self.entity_description.key and self.coordinator.status:
             return (
                 UnitOfTemperature.CELSIUS
