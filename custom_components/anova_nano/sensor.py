@@ -1,51 +1,71 @@
 """Sensor platform for Anova Nano."""
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from homeassistant.components.sensor import (
+    SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
-    SensorDeviceClass,
     SensorStateClass,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .coordinator import AnovaNanoDataUpdateCoordinator
 from .entity import AnovaNanoDescriptionEntity
 
-ENTITY_DESCRIPTIONS = (
-    SensorEntityDescription(
-        key="water_temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+
+@dataclass(frozen=True)
+class AnovaSensorEntityDescription(SensorEntityDescription):
+    """Describes Anova sensor entity."""
+
+
+SENSOR_DESCRIPTIONS: tuple[AnovaSensorEntityDescription, ...] = (
+    AnovaSensorEntityDescription(
+        key="water_temp",
+        name="water temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        icon="mdi:thermometer-water",
     ),
-    SensorEntityDescription(
-        key="heater_temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    AnovaSensorEntityDescription(
+        key="heater_temp",
+        name="heater temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer",
     ),
-    SensorEntityDescription(
-        key="triac_temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    AnovaSensorEntityDescription(
+        key="triac_temp",
+        name="triac temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer",
     ),
-    SensorEntityDescription(
-        key="internal_temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    AnovaSensorEntityDescription(
+        key="internal_temp",
+        name="internal temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer",
     ),
-    SensorEntityDescription(
+    AnovaSensorEntityDescription(
         key="motor_speed",
+        name="motor speed",
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:fan",
     ),
 )
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
+):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_devices(
@@ -53,7 +73,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
             coordinator=coordinator,
             entity_description=entity_description,
         )
-        for entity_description in ENTITY_DESCRIPTIONS
+        for entity_description in SENSOR_DESCRIPTIONS
     )
 
 
@@ -63,13 +83,36 @@ class AnovaNanoSensor(AnovaNanoDescriptionEntity, SensorEntity):
     def __init__(
         self,
         coordinator: AnovaNanoDataUpdateCoordinator,
-        entity_description: SensorEntityDescription,
+        entity_description: AnovaSensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""
         super().__init__(coordinator, entity_description)
         self.entity_description = entity_description
+        self.coordinator: AnovaNanoDataUpdateCoordinator = coordinator
 
     @property
-    def native_value(self) -> str:
+    def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-        return 10.0
+        try:
+            return getattr(self.coordinator.status, self.entity_description.key)
+        except AttributeError:
+            # Status is not set yet.
+            return None
+
+    async def async_update(self) -> None:
+        """Update the entity.
+
+        Only used by the generic entity update service.
+        """
+        await self.coordinator._async_update_data()
+
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        if "temp" in self.entity_description.key and self.coordinator.status:
+            return (
+                UnitOfTemperature.CELSIUS
+                if self.coordinator.status.water_temp_units == "C"
+                else UnitOfTemperature.FAHRENHEIT
+            )
+
+        return self.entity_description.native_unit_of_measurement
