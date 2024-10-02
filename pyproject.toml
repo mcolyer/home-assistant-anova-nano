@@ -1,8 +1,15 @@
 [project]
 name = "hacs-anova-nano"
+requires-python = ">=3.12"
 version = "0.1.0"
 authors = [
   { name="Mitja Muller-Jend", email="mitja.muellerjend+github@gmail.com" },
+]
+dependencies = [
+    "async-timeout>=4.0.3",
+    "homeassistant>=2024.9.3",
+    "pyanova-nano==0.2.1",
+    "pyserial>=3.5",
 ]
 
 [tool.pytest.ini_options]
@@ -10,3 +17,14 @@ asyncio_mode = "auto"
 
 [tool.setuptools]
 packages = ['custom_components']
+
+[tool.uv]
+dev-dependencies = [
+    "black==23.12.1",
+    "colorlog==6.7.0",
+    "pip>=21.0,<23.2",
+    "python-lsp-ruff==2.0.2",
+    "python-lsp-server==1.10.0",
+    "ruff==0.1.14",
+    "pytest-homeassistant-custom-component",
+]
