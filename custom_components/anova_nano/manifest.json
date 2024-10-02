@@ -5,8 +5,8 @@
   "config_flow": true,
   "bluetooth": [
     {
-      "service_uuid": "0e140000-0af1-4582-a242-773e63054c68",
-      "connectable": true
+      "connectable": true,
+      "service_uuid": "0e140000-0af1-4582-a242-773e63054c68"
     }
   ],
   "dependencies": ["bluetooth"],
