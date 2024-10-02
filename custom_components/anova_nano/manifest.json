@@ -2,13 +2,13 @@
   "domain": "anova_nano",
   "name": "Anova Nano",
   "codeowners": ["@mcolyer"],
+  "config_flow": true,
   "bluetooth": [
     {
       "service_uuid": "0e140000-0af1-4582-a242-773e63054c68",
       "connectable": true
     }
   ],
-  "config_flow": true,
   "dependencies": ["bluetooth"],
   "documentation": "https://github.com/mcolyer/hacs-anova-nano",
   "iot_class": "local_polling",
