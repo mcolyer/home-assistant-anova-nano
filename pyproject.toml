@@ -1,9 +1,10 @@
 [project]
 name = "hacs-anova-nano"
 requires-python = ">=3.12"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Mitja Muller-Jend", email="mitja.muellerjend+github@gmail.com" },
+  { name="Matt Colyer", email="matt@colyer.name" },
 ]
 dependencies = [
     "async-timeout>=4.0.3",
