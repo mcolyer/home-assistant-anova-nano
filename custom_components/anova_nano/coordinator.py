@@ -8,6 +8,7 @@ from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from bleak import BLEDevice, BleakError
+from bleak_retry_connector import BleakNotFoundError
 from homeassistant.components import bluetooth
 from habluetooth import BluetoothServiceInfoBleak
 from homeassistant.config_entries import ConfigEntry
@@ -83,7 +84,7 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
                     device=self._ble_device,
                     timeout_seconds=DEVICE_CONNECTION_TIMEOUT,
                 )
-            except (TimeoutError, BleakError) as err:
+            except (TimeoutError, BleakError, BleakNotFoundError) as err:
                 self.logger.debug(err, exc_info=True)
                 # Stop polling until async_discovered_device was called.
                 self.update_interval = None
