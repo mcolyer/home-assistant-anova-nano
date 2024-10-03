@@ -55,6 +55,8 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
 
     async def _connect(self):
         """Ensure the client is connected."""
+        logging.getLogger("pyanova_nano.client").setLevel(self.logger.level)
+
         if self._client and self._client.is_connected():
             return
 
