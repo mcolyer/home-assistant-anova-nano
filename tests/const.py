@@ -38,6 +38,7 @@ def generate_mock_service_info(address: str) -> BluetoothServiceInfoBleak:
         device=BLEDevice(address, "Nano", details=None, rssi=-127),
         time=0,
         connectable=True,
+        tx_power=-127,
     )
 
 

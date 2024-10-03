@@ -7,12 +7,12 @@
       "service_uuid": "0e140000-0af1-4582-a242-773e63054c68"
     }
   ],
-  "codeowners": ["@mcolyer"],
+  "codeowners": ["@filmkorn", "@mcolyer"],
   "config_flow": true,
   "dependencies": ["bluetooth"],
   "documentation": "https://github.com/mcolyer/hacs-anova-nano",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mcolyer/hacs-anova-nano/issues",
   "requirements": ["pyanova-nano==0.2.1"],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

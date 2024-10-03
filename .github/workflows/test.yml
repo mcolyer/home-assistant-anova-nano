@@ -9,8 +9,8 @@ on:
       - "main"
 
 jobs:
-  ruff:
-    name: "Ruff"
+  test:
+    name: "Test"
     runs-on: "ubuntu-latest"
     steps:
         - name: "Checkout the repository"
@@ -19,11 +19,14 @@ jobs:
         - name: "Set up Python"
           uses: actions/setup-python@v4.7.1
           with:
-            python-version: "3.11"
-            cache: "pip"
+            python-version: "3.12"
 
-        - name: "Install requirements"
-          run: python3 -m pip install -r requirements_test.txt
+        - name: Enable caching and define a custom cache key suffix
+          id: setup-uv
+          uses: astral-sh/setup-uv@v3
+          with:
+            enable-cache: true
+            cache-suffix: "uv"
 
         - name: "Run"
-          run: scripts/test
+          run: uv run scripts/test
