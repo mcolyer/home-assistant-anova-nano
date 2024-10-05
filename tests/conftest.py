@@ -2,8 +2,24 @@
 from unittest.mock import patch
 
 import pytest
+from pytest_socket import enable_socket, socket_allow_hosts
 
 pytest_plugins = "pytest_homeassistant_custom_component"
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_runtest_setup():
+    """Ensure the bluetooth integration we depend on can load.
+
+    https://github.com/MatthewFlamm/pytest-homeassistant-custom-component/issues/154#issuecomment-2065081783
+
+    """
+    enable_socket()
+    socket_allow_hosts(
+        # Allow "None" to allow the bluetooth integration to load.
+        ["None"],
+        allow_unix_socket=True,
+    )
 
 
 # This fixture is used to enable custom integrations, otherwise the custom_components folder will not be loaded.
