@@ -1,7 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# Resolve all dependencies that the application requires to run.
 
+# Stop on errors
 set -e
 
 cd "$(dirname "$0")/.."
 
-python3 -m pip install --requirement requirements.txt
+pip3 install uv
+
+echo "Creating venv..."
+uv venv
+
+echo "Installing development dependencies..."
+uv sync
