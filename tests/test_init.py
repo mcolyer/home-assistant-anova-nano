@@ -1,4 +1,5 @@
 """Test Anova Nano setup process."""
+
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.anova_nano import AnovaNanoDataUpdateCoordinator

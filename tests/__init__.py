@@ -1,4 +1,5 @@
 """Tests for Anova Nano integration."""
+
 from unittest.mock import patch
 
 

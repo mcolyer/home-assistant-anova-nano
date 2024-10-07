@@ -1,4 +1,5 @@
 """Adds config flow for Anova Nano."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -41,7 +42,9 @@ class AnovaNanoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     def _async_discover_devices(self) -> None:
         current_addresses = self._async_current_ids()
         for connectable in (True, False):
-            for discovery_info in async_discovered_service_info(self.hass, connectable):
+            for discovery_info in bluetooth.async_discovered_service_info(
+                self.hass, connectable
+            ):
                 address = discovery_info.address
                 if (
                     format_unique_id(address) in current_addresses

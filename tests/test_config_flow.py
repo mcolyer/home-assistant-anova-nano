@@ -1,4 +1,5 @@
 """Test anova_nano config flow."""
+
 from unittest.mock import patch
 
 import pytest

@@ -1,4 +1,5 @@
 """Global fixtures for Anova Nano integration."""
+
 from unittest.mock import patch
 
 import pytest

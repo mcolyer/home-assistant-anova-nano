@@ -1,4 +1,5 @@
 """Binary sensor platform for anova_nano."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

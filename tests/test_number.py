@@ -1,4 +1,5 @@
 """Test the Anova Nano number platform."""
+
 from unittest.mock import AsyncMock, patch
 import pytest
 from homeassistant.core import HomeAssistant

@@ -1,4 +1,5 @@
 """Switch platform for Anova Nano."""
+
 from __future__ import annotations
 
 import asyncio
