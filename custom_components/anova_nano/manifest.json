@@ -13,6 +13,6 @@
   "documentation": "https://github.com/mcolyer/hacs-anova-nano",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mcolyer/hacs-anova-nano/issues",
-  "requirements": ["pyanova-nano==0.2.1"],
-  "version": "0.1.1"
+  "requirements": ["pyanova-nano==0.2.2"],
+  "version": "0.1.2"
 }

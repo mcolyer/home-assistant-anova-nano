@@ -83,6 +83,18 @@ class AnovaNanoNumberEntity(AnovaNanoDescriptionEntity, NumberEntity):
         """Return the current value of the number entity."""
         return getattr(self.coordinator, self.entity_description.state_attr)
 
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        """Return the native unit of measurement."""
+        if "temp" in self.entity_description.key and self.coordinator.status:
+            return (
+                UnitOfTemperature.CELSIUS
+                if self.coordinator.status.water_temp_units == "C"
+                else UnitOfTemperature.FAHRENHEIT
+            )
+
+        return self.entity_description.native_unit_of_measurement
+
     async def async_set_native_value(self, value: float):
         """Set the value of the number entity."""
         func = getattr(self.coordinator, self.entity_description.set_fn)
