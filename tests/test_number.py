@@ -7,7 +7,6 @@ from homeassistant.components.number import NumberDeviceClass
 from custom_components.anova_nano.number import (
     AnovaNanoNumberEntity,
     ENTITY_DESCRIPTIONS,
-    async_setup_entry,
 )
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 from custom_components.anova_nano.const import DOMAIN
