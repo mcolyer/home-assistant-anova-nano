@@ -19,7 +19,7 @@ from .coordinator import AnovaNanoDataUpdateCoordinator
 from .entity import AnovaNanoDescriptionEntity
 
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True)
 class AnovaNanoBinaryEntityDescription(BinarySensorEntityDescription):
     """Describes the binary sensors."""
 

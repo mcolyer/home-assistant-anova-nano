@@ -16,7 +16,7 @@ from .const import DOMAIN
 from .entity import AnovaNanoDescriptionEntity
 
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True)
 class AnovaNanoSwitchEntityDescription(SwitchEntityDescription):
     """Describes Anova Nano switch entity."""
 

@@ -121,6 +121,9 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
     @property
     def client(self) -> PyAnova:
         """The API client."""
+        if not self._client:
+            raise UpdateFailed("Client not ready.")
+
         return self._client
 
     @callback

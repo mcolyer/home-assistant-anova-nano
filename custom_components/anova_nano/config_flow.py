@@ -6,13 +6,12 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.components.bluetooth import (
-    BluetoothServiceInfoBleak,
-    async_discovered_service_info,
-)
+from homeassistant.components.bluetooth import BluetoothServiceInfoBleak
+from homeassistant.components import bluetooth
 from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import AbortFlow, FlowResult
+from pyanova_nano import PyAnova
 
 from .const import DOMAIN, SERVICE_UUID
 
@@ -67,6 +66,11 @@ class AnovaNanoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         """Confirm a single device."""
         assert self._discovered_adv is not None
+        try:
+            await self._test_connection(self._discovered_adv.address)
+        except Exception:
+            raise AbortFlow(reason="failed_connection")
+
         if user_input is not None:
             return await self._async_create_entry_from_discovery(user_input)
 
@@ -79,10 +83,19 @@ class AnovaNanoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             },
         )
 
+    async def _test_connection(self, address):
+        """Test the connection to the device."""
+        device = bluetooth.async_ble_device_from_address(
+            self.hass, address=address.upper(), connectable=True
+        )
+        client = PyAnova(self.hass.loop, device=device)
+        async with client:
+            await client.get_sensor_values()
+
     async def async_step_user(
         self,
         user_input: dict | None = None,
-    ) -> config_entries.FlowResult:
+    ) -> FlowResult:
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:

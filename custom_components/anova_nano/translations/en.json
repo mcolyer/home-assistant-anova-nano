@@ -14,7 +14,8 @@
         },
         "error": {
             "unknown": "Unknown error occurred.",
-            "no_devices_found": "Could not discover any Anova Nano devices."
+            "no_devices_found": "Could not discover any Anova Nano devices.",
+            "failed_connection": "Failed to connect to your Anova Nano device {address}."
         }
     }
 }
