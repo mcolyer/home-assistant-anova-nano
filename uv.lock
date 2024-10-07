@@ -593,7 +593,7 @@ wheels = [
 
 [[package]]
 name = "hacs-anova-nano"
-version = "0.1.1"
+version = "0.1.2"
 source = { virtual = "." }
 dependencies = [
     { name = "async-timeout" },
@@ -617,7 +617,7 @@ dev = [
 requires-dist = [
     { name = "async-timeout", specifier = ">=4.0.3" },
     { name = "homeassistant", specifier = "==2024.1.4" },
-    { name = "pyanova-nano", specifier = "==0.2.1" },
+    { name = "pyanova-nano", specifier = "==0.2.2" },
     { name = "pyserial", specifier = ">=3.5" },
 ]
 
@@ -989,15 +989,16 @@ wheels = [
 
 [[package]]
 name = "pyanova-nano"
-version = "0.2.1"
+version = "0.2.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bleak" },
+    { name = "bleak-retry-connector" },
     { name = "protobuf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/24/663b8af4a8b37e495e3a0dc3a22ece3a89227cdb21bce0d976ffd8a953c1/pyanova_nano-0.2.1.tar.gz", hash = "sha256:3077c996420fb05cacd0c800880f64d3af7a80a56e5ad92d84c2e738e5c3f3f6", size = 17241 }
+sdist = { url = "https://files.pythonhosted.org/packages/85/58/cac0a99fb0c5f359bb072f9d18b096647c3fdd49cf138f1074a25b1e7400/pyanova_nano-0.2.2.tar.gz", hash = "sha256:3f2c7d4e870f1c2d8809aa0dd0a709c585e82ad384026e543441f49d1bb9314f", size = 17555 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/45/ef38427bf28da7f65db86dd42be9beca000164d89b3c58069b73513e5230/pyanova_nano-0.2.1-py3-none-any.whl", hash = "sha256:13cf4309aa9cf24af6ddc1e8821a004db20ae85910ff4c10aebd7d519ed22345", size = 20152 },
+    { url = "https://files.pythonhosted.org/packages/2e/15/5f86c03687ba7c700062353856a27769af5fcdbe8b11765508825b3dce40/pyanova_nano-0.2.2-py3-none-any.whl", hash = "sha256:160ad31bf37db778c18ccfd4af76283eb4c6414ada4cc76e4f3152ebffeac2ab", size = 20303 },
 ]
 
 [[package]]
