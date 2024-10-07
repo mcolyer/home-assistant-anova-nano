@@ -28,4 +28,6 @@ dev-dependencies = [
     "python-lsp-server==1.10.0",
     "ruff==0.1.14",
     "pytest-homeassistant-custom-component",
+    "uv>=0.4.18",
+    "pyudev>=0.24.3",
 ]
