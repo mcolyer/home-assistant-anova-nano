@@ -1,7 +1,7 @@
 [project]
 name = "hacs-anova-nano"
 requires-python = ">=3.12"
-version = "0.1.2"
+version = "0.5.0"
 authors = [
   { name="Mitja Muller-Jend", email="mitja.muellerjend+github@gmail.com" },
   { name="Matt Colyer", email="matt@colyer.name" },
