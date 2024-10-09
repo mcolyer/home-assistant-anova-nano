@@ -25,6 +25,7 @@ def mock_coordinator(hass):
     coordinator.timer = 30
     coordinator.set_timer = AsyncMock()
     coordinator.target_temperature = 60.0
+    coordinator.temp_units = UnitOfTemperature.CELSIUS
     return coordinator
 
 
@@ -52,12 +53,40 @@ async def test_number_entity_native_unit_of_measurement(hass, mock_coordinator):
     for description in ENTITY_DESCRIPTIONS:
         entity = AnovaNanoNumberEntity(mock_coordinator, description)
         if "_temp" in description.key:
+            mock_coordinator.temp_units = UnitOfTemperature.CELSIUS
             assert entity.native_unit_of_measurement == UnitOfTemperature.CELSIUS
-            mock_coordinator.status.water_temp_units = "F"
+            mock_coordinator.temp_units = UnitOfTemperature.FAHRENHEIT
             assert entity.native_unit_of_measurement == UnitOfTemperature.FAHRENHEIT
-            mock_coordinator.status.water_temp_units = "C"
         else:
             assert entity.native_unit_of_measurement == UnitOfTime.MINUTES
+
+
+async def test_target_temp_unit_of_measurement_converted(
+    hass, mock_coordinator, monkeypatch
+):
+    """Ensure units are converted from units set in configuration to units set on device."""
+    target_temp_entity_description = ENTITY_DESCRIPTIONS[1]
+    entity = AnovaNanoNumberEntity(mock_coordinator, target_temp_entity_description)
+    assert entity.native_unit_of_measurement == UnitOfTemperature.CELSIUS
+    monkeypatch.setattr(entity, "hass", hass)
+
+    # Device set to Celsius, hass set to Fahrenheit.
+    hass.config.units.temperature_unit = UnitOfTemperature.FAHRENHEIT
+    mock_coordinator.temp_units = UnitOfTemperature.CELSIUS
+    assert entity.native_value == 60.0
+    assert entity.value == 140.0
+
+    # Device set to Fahrenheit, hass set to Celsius
+    mock_coordinator.temp_units = UnitOfTemperature.FAHRENHEIT
+    hass.config.units.temperature_unit = UnitOfTemperature.CELSIUS
+    assert entity.native_value == 60.0
+    assert round(float(entity.value or 0.0), 1) == 15.6
+
+    # Both device and hass set to Celsius.
+    hass.config.units.temperature_unit = UnitOfTemperature.CELSIUS
+    mock_coordinator.temp_units = UnitOfTemperature.CELSIUS
+    assert entity.value == 60.0
+    assert entity.native_value == 60.0
 
 
 async def test_async_setup_entry(hass: HomeAssistant, mock_coordinator):
@@ -92,7 +121,6 @@ def test_entity_descriptions():
     assert temp_description.name == "Target Temperature"
     assert temp_description.icon == "mdi:water-thermometer-outline"
     assert temp_description.translation_key == "target_temp"
-    assert temp_description.native_unit_of_measurement == UnitOfTemperature.CELSIUS
     assert temp_description.device_class == NumberDeviceClass.TEMPERATURE
     assert temp_description.native_max_value == 92
     assert temp_description.native_min_value == 0

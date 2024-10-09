@@ -88,11 +88,7 @@ class AnovaNanoNumberEntity(AnovaNanoDescriptionEntity, NumberEntity):
     def native_unit_of_measurement(self) -> str | None:
         """Return the native unit of measurement."""
         if "temp" in self.entity_description.key and self.coordinator.status:
-            return (
-                UnitOfTemperature.CELSIUS
-                if self.coordinator.status.water_temp_units == "C"
-                else UnitOfTemperature.FAHRENHEIT
-            )
+            return self.coordinator.temp_units
 
         return self.entity_description.native_unit_of_measurement
 
