@@ -84,6 +84,7 @@ def bypass_get_data_fixture(monkeypatch):
     async def mock_get_unit(self) -> str:
         return "C"
 
+
     def patch(module: str):
         monkeypatch.setattr(
             f"{module}.bluetooth.async_ble_device_from_address",
@@ -95,6 +96,7 @@ def bypass_get_data_fixture(monkeypatch):
             mock_connect,
         )
         monkeypatch.setattr(
+
             f"{module}.PyAnova.get_unit",
             mock_get_unit,
         )
