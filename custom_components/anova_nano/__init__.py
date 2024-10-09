@@ -3,6 +3,7 @@
 For more details about this integration, please refer to
 https://github.com/mcolyer/hacs-anova-nano
 """
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """Binary sensor platform for anova_nano."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -18,7 +19,7 @@ from .coordinator import AnovaNanoDataUpdateCoordinator
 from .entity import AnovaNanoDescriptionEntity
 
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True)
 class AnovaNanoBinaryEntityDescription(BinarySensorEntityDescription):
     """Describes the binary sensors."""
 

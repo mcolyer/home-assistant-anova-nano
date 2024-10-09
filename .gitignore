@@ -4,18 +4,22 @@ __pycache__
 *.egg-info
 */build/*
 */dist/*
-
+build
 
 # misc
 .coverage
 .vscode
+.idea
 coverage.xml
-
+__pycache__
 
 # Home Assistant configuration
 config/*
 !config/configuration.yaml
 
+.pytest_cache/
+.ruff_cache/
+.venv/*
 venv/*
 .aider*
 .envrc

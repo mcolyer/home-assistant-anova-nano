@@ -1,4 +1,5 @@
 """Number platform for Anova Nano."""
+
 import asyncio
 from dataclasses import dataclass
 
