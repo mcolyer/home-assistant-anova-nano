@@ -109,13 +109,25 @@ class AnovaNanoSensor(AnovaNanoDescriptionEntity, SensorEntity):
 
     @property
     def native_unit_of_measurement(self) -> str | None:
-        """Return the native unit of measurement."""
+        """Return the native unit of measurement.
+
+        The Anova Nano reports the following temperatures in degrees Celsius:
+            - triac
+            - heater
+            - internal
+
+        The following units are reported depending on the device settings:
+            - water
+            - target (implemented in number.py)
+
+        """
         key = self.entity_description.key
 
-        if key == "water_temp" and (units := self.coordinator.temp_units):
-            return units
+        if key == "water_temp":
+            if units := self.coordinator.temp_units:
+                return units
 
-        if "temp" in key and "water_temp" not in key:
+        elif "temp" in key:
             return UnitOfTemperature.CELSIUS
 
         return self.entity_description.native_unit_of_measurement
