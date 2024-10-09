@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from bleak import BLEDevice, BleakError
 from bleak_retry_connector import BleakNotFoundError
 from homeassistant.components import bluetooth
+from homeassistant.const import UnitOfTemperature
 from habluetooth import BluetoothServiceInfoBleak
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS
@@ -51,6 +52,8 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
         self._client: PyAnova | None = None
 
         self.last_update_success: bool = False
+
+        self._temp_units: str | None = None
         self.status: SensorValues | None = None
         self.timer: int | None = None
         self.target_temperature: float | None = None
@@ -145,6 +148,7 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
 
         async with timeout(TIMEOUT):
             try:
+                self._temp_units = await self.client.get_unit()
                 self.status = await self.client.get_sensor_values()
                 self.timer = await self.client.get_timer()
                 self.target_temperature = await self.client.get_target_temperature()
@@ -198,3 +202,15 @@ class AnovaNanoDataUpdateCoordinator(DataUpdateCoordinator[None]):
             raise UpdateFailed(err) from err
 
         self.target_temperature = temp
+
+    @property
+    def temp_units(self) -> str | None:
+        """Temperature units used by the device."""
+        if not self._temp_units:
+            return None
+
+        return (
+            UnitOfTemperature.CELSIUS
+            if self._temp_units == "C"
+            else UnitOfTemperature.FAHRENHEIT
+        )
