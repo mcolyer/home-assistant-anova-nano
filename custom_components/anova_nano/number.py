@@ -34,6 +34,8 @@ ENTITY_DESCRIPTIONS = [
         translation_key="cooking_time",
         native_unit_of_measurement=UnitOfTime.MINUTES,
         device_class=NumberDeviceClass.DURATION,
+        # Max time settable on device: 99h:55m
+        native_max_value=99 * 60 + 55,
         set_fn="set_timer",
         state_attr="timer",
     ),
