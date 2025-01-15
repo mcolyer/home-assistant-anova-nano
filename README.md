@@ -8,9 +8,16 @@
 
 _Integration to Anova Nano sous vide cooker for Home Assistant_
 
-![Screenshot of Anova Nano Integration](https://private-user-images.githubusercontent.com/8842084/371416317-f72d967c-e161-43a1-9f47-164f2cbc7c51.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Mjc4MzY0ODEsIm5iZiI6MTcyNzgzNjE4MSwicGF0aCI6Ii84ODQyMDg0LzM3MTQxNjMxNy1mNzJkOTY3Yy1lMTYxLTQzYTEtOWY0Ny0xNjRmMmNiYzdjNTEucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI0MTAwMiUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDEwMDJUMDIyOTQxWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9ZTM4ZGQzMGVjYTE1ZTBiYjEwODlhN2I4ZjIzMDQwZDhmYTA1YTVkZmRiNWRlMmFjNTVjYjBkNTZkYmMzOWQwNCZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QifQ.zS0TWOgelZXubzhvfpup3Q5mdpP5GrN_ITiyT2j3f9s)
+![Screenshot of Anova Nano Integration](anova_nano_screenshot.png)
 
 ## Installation
+
+### HACS installation
+
+1. Add the repository of this repository to HACS custom repositories ([see docs](https://www.hacs.xyz/docs/faq/custom_repositories/)). 
+1. Search for the `Anova Nano` integration and install it.
+
+### Manual installation
 
 1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
 1. If you do not have a `custom_components` directory (folder) there, you need to create it.
@@ -22,7 +29,7 @@ _Integration to Anova Nano sous vide cooker for Home Assistant_
 
 ## Known Issues
 
-- Currently the integration doesn't handle reconnecting to the Anova Nano if it goes offline. You will need to restart the integration to reconnect.
+- The integration doesn't handle reconnecting to the Anova Nano if the bluetooth adapter or bluetooth proxy goes offline. You may need to restart the integration to reconnect.
 
 ## Contributions are welcome!
 
