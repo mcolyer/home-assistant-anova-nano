@@ -1,7 +1,7 @@
 """Custom integration to integrate Anova Nano with Home Assistant.
 
 For more details about this integration, please refer to
-https://github.com/mcolyer/hacs-anova-nano
+https://github.com/mcolyer/home-assistant-anova-nano
 """
 
 from __future__ import annotations

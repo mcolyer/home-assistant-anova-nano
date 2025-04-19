@@ -775,7 +775,7 @@ wheels = [
 ]
 
 [[package]]
-name = "hacs-anova-nano"
+name = "home-assistant-anova-nano"
 version = "0.6.2"
 source = { virtual = "." }
 dependencies = [
