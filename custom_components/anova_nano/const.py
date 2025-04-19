@@ -6,7 +6,7 @@ LOGGER: Logger = getLogger(__package__)
 
 NAME = "Anova Nano"
 DOMAIN = "anova_nano"
-VERSION = "0.6.2"
+VERSION = "0.7.0"
 ATTRIBUTION = ""
 
 SERVICE_UUID = "0e140000-0af1-4582-a242-773e63054c68"

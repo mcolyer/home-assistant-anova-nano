@@ -14,8 +14,13 @@ _Integration to Anova Nano sous vide cooker for Home Assistant_
 
 ### HACS installation
 
-1. Add the repository of this repository to HACS custom repositories ([see docs](https://www.hacs.xyz/docs/faq/custom_repositories/)). 
-1. Search for the `Anova Nano` integration and install it.
+1. Add the repository of this repository to HACS custom repositories ([see docs](https://www.hacs.xyz/docs/faq/custom_repositories/)): 
+
+    [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mcolyer&repository=home-assistant-anova-nano)
+1. Download the integration and restart Home Assistant.
+1. Search for the `Anova Nano` integration and add it to your Home Assistant.
+
+    [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anova-nano)
 
 ### Manual installation
 
@@ -36,9 +41,9 @@ _Integration to Anova Nano sous vide cooker for Home Assistant_
 If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
 
 [pyanova_nano]: https://github.com/filmkorn/pyanova-nano
-[commits-shield]: https://img.shields.io/github/commit-activity/y/mcolyer/hacs-anova-nano.svg?style=for-the-badge
-[commits]: https://github.com/mcolyer/hacs-anova-nano/commits/main
-[license-shield]: https://img.shields.io/github/license/mcolyer/hacs-anova-nano.svg?style=for-the-badge
+[commits-shield]: https://img.shields.io/github/commit-activity/y/mcolyer/home-assistant-anova-nano.svg?style=for-the-badge
+[commits]: https://github.com/mcolyer/home-assistant-anova-nano/commits/main
+[license-shield]: https://img.shields.io/github/license/mcolyer/home-assistant-anova-nano.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Matt%20Colyer%20%40mcolyer-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/mcolyer/hacs-anova-nano.svg?style=for-the-badge
-[releases]: https://github.com/mcolyer/hacs-anova-nano/releases
+[releases-shield]: https://img.shields.io/github/release/mcolyer/home-assistant-anova-nano.svg?style=for-the-badge
+[releases]: https://github.com/mcolyer/home-assistant-anova-nano/releases
