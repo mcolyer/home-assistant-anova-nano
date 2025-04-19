@@ -776,7 +776,7 @@ wheels = [
 
 [[package]]
 name = "home-assistant-anova-nano"
-version = "0.6.2"
+version = "0.7.0"
 source = { virtual = "." }
 dependencies = [
     { name = "async-timeout" },
