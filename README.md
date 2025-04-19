@@ -14,8 +14,13 @@ _Integration to Anova Nano sous vide cooker for Home Assistant_
 
 ### HACS installation
 
-1. Add the repository of this repository to HACS custom repositories ([see docs](https://www.hacs.xyz/docs/faq/custom_repositories/)). 
-1. Search for the `Anova Nano` integration and install it.
+1. Add the repository of this repository to HACS custom repositories ([see docs](https://www.hacs.xyz/docs/faq/custom_repositories/)): 
+
+    [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mcolyer&repository=home-assistant-anova-nano)
+1. Download the integration and restart Home Assistant.
+1. Search for the `Anova Nano` integration and add it to your Home Assistant.
+
+    [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anova-nano)
 
 ### Manual installation
 
