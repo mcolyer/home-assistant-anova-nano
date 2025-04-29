@@ -44,10 +44,7 @@ ENTITY_DESCRIPTIONS = [
         name="Target Temperature",
         icon="mdi:water-thermometer-outline",
         translation_key="target_temp",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=NumberDeviceClass.TEMPERATURE,
-        native_max_value=92,
-        native_min_value=0,
         native_step=0.1,
         set_fn="set_target_temperature",
         state_attr="target_temperature",
@@ -61,11 +58,16 @@ async def async_setup_entry(
     """Set up the binary_sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_devices(
-        AnovaNanoNumberEntity(
-            coordinator=coordinator,
-            entity_description=entity_description,
-        )
-        for entity_description in ENTITY_DESCRIPTIONS
+        [
+            AnovaNanoNumberEntity(
+                coordinator=coordinator,
+                entity_description=ENTITY_DESCRIPTIONS[0],
+            ),
+            AnovaNanoTargetTempNumberEntity(
+                coordinator=coordinator,
+                entity_description=ENTITY_DESCRIPTIONS[1],
+            ),
+        ]
     )
 
 
@@ -89,9 +91,6 @@ class AnovaNanoNumberEntity(AnovaNanoDescriptionEntity, NumberEntity):
     @property
     def native_unit_of_measurement(self) -> str | None:
         """Return the native unit of measurement."""
-        if "temp" in self.entity_description.key and self.coordinator.status:
-            return self.coordinator.temp_units
-
         return self.entity_description.native_unit_of_measurement
 
     async def async_set_native_value(self, value: float):
@@ -104,3 +103,24 @@ class AnovaNanoNumberEntity(AnovaNanoDescriptionEntity, NumberEntity):
         await asyncio.sleep(0.1)
 
         await self.coordinator.async_request_refresh()
+
+
+class AnovaNanoTargetTempNumberEntity(AnovaNanoNumberEntity):
+    """Represent the target temperatere of the device in both units."""
+
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        """The units of degrees as set on the device."""
+        return self.coordinator.temp_units
+
+    @property
+    def native_min_value(self) -> int:
+        """The maximum value in degrees C and F."""
+        return 0 if self.native_unit_of_measurement == UnitOfTemperature.CELSIUS else 32
+
+    @property
+    def native_max_value(self) -> int:
+        """The minimum value in degrees C and F."""
+        return (
+            92 if self.native_unit_of_measurement == UnitOfTemperature.CELSIUS else 197
+        )

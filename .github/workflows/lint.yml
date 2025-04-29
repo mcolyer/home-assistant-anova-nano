@@ -23,7 +23,7 @@ jobs:
 
         - name: Enable caching and define a custom cache key suffix
           id: setup-uv
-          uses: astral-sh/setup-uv@v3
+          uses: astral-sh/setup-uv@v6
           with:
             enable-cache: true
 

@@ -7,6 +7,7 @@ from homeassistant.const import UnitOfTemperature, UnitOfTime
 from homeassistant.components.number import NumberDeviceClass
 from custom_components.anova_nano.number import (
     AnovaNanoNumberEntity,
+    AnovaNanoTargetTempNumberEntity,
     ENTITY_DESCRIPTIONS,
 )
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -51,13 +52,17 @@ async def test_number_entity_set_native_value(hass, mock_coordinator):
 async def test_number_entity_native_unit_of_measurement(hass, mock_coordinator):
     """Test the native_unit_of_measurement property of number entities."""
     for description in ENTITY_DESCRIPTIONS:
-        entity = AnovaNanoNumberEntity(mock_coordinator, description)
-        if "_temp" in description.key:
+        if "target_temp" in description.key:
+            entity = AnovaNanoTargetTempNumberEntity(mock_coordinator, description)
             mock_coordinator.temp_units = UnitOfTemperature.CELSIUS
             assert entity.native_unit_of_measurement == UnitOfTemperature.CELSIUS
+            assert entity.native_max_value == 92
             mock_coordinator.temp_units = UnitOfTemperature.FAHRENHEIT
             assert entity.native_unit_of_measurement == UnitOfTemperature.FAHRENHEIT
+            assert entity.native_min_value == 32
+            assert entity.native_max_value == 197
         else:
+            entity = AnovaNanoNumberEntity(mock_coordinator, description)
             assert entity.native_unit_of_measurement == UnitOfTime.MINUTES
 
 
@@ -66,7 +71,9 @@ async def test_target_temp_unit_of_measurement_converted(
 ):
     """Ensure units are converted from units set in configuration to units set on device."""
     target_temp_entity_description = ENTITY_DESCRIPTIONS[1]
-    entity = AnovaNanoNumberEntity(mock_coordinator, target_temp_entity_description)
+    entity = AnovaNanoTargetTempNumberEntity(
+        mock_coordinator, target_temp_entity_description
+    )
     assert entity.native_unit_of_measurement == UnitOfTemperature.CELSIUS
     monkeypatch.setattr(entity, "hass", hass)
 
@@ -122,8 +129,6 @@ def test_entity_descriptions():
     assert temp_description.icon == "mdi:water-thermometer-outline"
     assert temp_description.translation_key == "target_temp"
     assert temp_description.device_class == NumberDeviceClass.TEMPERATURE
-    assert temp_description.native_max_value == 92
-    assert temp_description.native_min_value == 0
     assert temp_description.native_step == 0.1
     assert temp_description.set_fn == "set_target_temperature"
     assert temp_description.state_attr == "target_temperature"
@@ -132,7 +137,7 @@ def test_entity_descriptions():
 async def test_number_entity_set_native_value_with_sleep(hass, mock_coordinator):
     """Test setting the native value of number entities with sleep."""
     for description in ENTITY_DESCRIPTIONS:
-        entity = AnovaNanoNumberEntity(mock_coordinator, description)
+        entity = AnovaNanoTargetTempNumberEntity(mock_coordinator, description)
         new_value = 45.0 if description.key == "target_temp" else 45
         with patch("asyncio.sleep") as mock_sleep:
             await entity.async_set_native_value(new_value)
