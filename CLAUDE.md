@@ -56,3 +56,22 @@ scripts/format  # Runs black formatter
 ## Bluetooth Integration
 
 The integration relies on Home Assistant's Bluetooth component and registers callbacks for device discovery. The device uses service UUID `0e140000-0af1-4582-a242-773e63054c68` for BLE communication.
+
+## Release Process
+
+**Version files to update:**
+- `pyproject.toml` - Main project version
+- `custom_components/anova_nano/manifest.json` - Home Assistant integration version
+- `custom_components/anova_nano/const.py` - VERSION constant
+
+**Release commands:**
+```bash
+# Create and push tag
+git tag v0.7.2
+git push origin v0.7.2
+
+# Create GitHub release
+gh release create v0.7.2 --title "v0.7.2" --notes "Release notes here"
+```
+
+**Important**: Always ensure all three version files are synchronized before creating a release. The integration will not work properly if versions are mismatched.
