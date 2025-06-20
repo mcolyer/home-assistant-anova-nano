@@ -15,4 +15,5 @@
   "issue_tracker": "https://github.com/mcolyer/home-assistant-anova-nano/issues",
   "requirements": ["pyanova-nano==0.2.3"],
   "version": "0.7.1"
+  "requirements": ["pyanova-nano>=0.2.3,<1"],
 }

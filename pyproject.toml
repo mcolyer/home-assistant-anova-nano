@@ -9,7 +9,7 @@ authors = [
 dependencies = [
     "async-timeout>=4.0.3",
     "homeassistant==2024.10.0",
-    "pyanova-nano==0.2.3",
+    "pyanova-nano>=0.2.3,<1",
     "pyserial>=3.5",
     "pyudev>=0.24.3",
 ]
