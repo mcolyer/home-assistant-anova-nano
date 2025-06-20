@@ -13,6 +13,6 @@
   "documentation": "https://github.com/mcolyer/home-assistant-anova-nano",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mcolyer/home-assistant-anova-nano/issues",
-  "requirements": ["pyanova-nano==0.2.3"],
-  "version": "0.7.1"
+  "requirements": ["pyanova-nano>=0.2.3,<1"],
+  "version": "0.7.2"
 }
