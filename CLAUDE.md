@@ -75,3 +75,7 @@ gh release create v0.7.2 --title "v0.7.2" --notes "Release notes here"
 ```
 
 **Important**: Always ensure all three version files are synchronized before creating a release. The integration will not work properly if versions are mismatched.
+
+**Changelog maintenance:**
+- Use `date` command to get current date in YYYY-MM-DD format for changelog entries
+- Check GitHub releases with `gh release list` to get accurate release dates for existing entries

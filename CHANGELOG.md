@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.7.2] - 2024-12-20
+## [0.7.2] - 2025-06-20
 
 ### Added
 - CLAUDE.md file for improved development workflow
@@ -20,18 +20,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update name in manifests (#15)
 - Version consistency across all project files
 
-## [0.7.1] - 2024-11-XX
+## [0.7.1] - 2025-04-29
 
 ### Changed
 - Update readme (#12)
 - Update to pyanova-nano==0.2.3 (#11)
 
-## [0.6.1] - 2024-11-XX
+## [0.7.0] - 2025-04-20
+
+### Technical
+- Various improvements and updates
+
+## [0.6.2] - 2024-11-12
+
+### Changed
+- Updated pyanova-nano dependency
+
+## [0.6.1] - 2024-10-16
 
 ### Fixed
 - Match max cooking time to device (#10)
 
-## [0.6.0] - 2024-11-XX
+## [0.6.0] - 2024-10-09
 
 ### Fixed
 - Fix unit conversion (#9)
